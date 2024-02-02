@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Painting Program with Color Picker</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column; /* To stack elements vertically */
+        }
+        #canvasContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #canvas {
+            border: 5px solid black; /* Increased border thickness */
+            border-radius: 15px; /* Rounded edges */
+        }
+        #colorPicker {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            max-width: 300px; /* Limit width to prevent color options from spreading too far */
+            margin-top: 20px;
+        }
+        .color-option {
+            width: 40px; /* Increased size */
+            height: 40px; /* Increased size */
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid black; /* Black border */
+        }
+        h1 {
+            margin-bottom: 20px; /* Add some space below the text */
+        }
+    </style>
+</head>
+<body>
+    <h1>What will you draw today?</h1> <!-- Added text -->
+    <div id="canvasContainer">
+        <canvas id="canvas" width="800" height="600"></canvas>
+        <div id="colorPicker">
+            <div class="color-option" style="background-color: red;"></div>
+            <div class="color-option" style="background-color: green;"></div>
+            <div class="color-option" style="background-color: blue;"></div>
+            <div class="color-option" style="background-color: yellow;"></div>
+        </div>
+    </div>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const colorPicker = document.getElementById('colorPicker');
+        let isDrawing = false;
+        
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        canvas.addEventListener('mousemove', draw);
+        
+        function startDrawing(event) {
+            isDrawing = true;
+            draw(event);
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        function draw(event) {
+            if (!isDrawing) return;
+            
+            const x = event.offsetX;
+            const y = event.offsetY;
+            
+            context.lineWidth = 5;
+            context.lineCap = 'round';
+            context.strokeStyle = event.target.style.backgroundColor; // Use selected color
+            
+            context.lineTo(x, y);
+            context.stroke();
+            context.beginPath();
+            context.moveTo(x, y);
+        }
+        
+        // Add event listeners to color options
+        const colorOptions = document.querySelectorAll('.color-option');
+        colorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Set the selected color as the stroke style
+                context.strokeStyle = option.style.backgroundColor;
+            });
+        });
+    </script>
+</body>
+</html>
